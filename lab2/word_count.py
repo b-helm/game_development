@@ -5,7 +5,12 @@ import sys
 
 def main():
     """ prints the word frequency of the file named on the command line """
-    f = open(sys.argv[1]).read()
+    try:
+        f = open(sys.argv[1]).read()
+    except IOError:
+        print "Invalid File"
+        sys.exit()
+
     word_list = {}
     word_count = 0
     for word in f.split():

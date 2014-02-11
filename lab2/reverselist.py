@@ -4,7 +4,8 @@
 def main():
     """ Prints the list in reverse order """
     l = ["Anteater","Bear","Moose","Porcupine","Whale","Zebra"]
-    print l[::-1]
+    for element in reversed(l):
+        print element
 
 if __name__ == "__main__":
     main()
