@@ -20,7 +20,7 @@ def main():
         else:
             word_list[word.lower()] = 1
 
-    for key, value in word_list.items():
+    for key, value in sorted(word_list.items()):
         print key + " " + str(value)
     print "There are " + str(word_count) + " words in the file."
 
