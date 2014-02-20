@@ -1,0 +1,140 @@
+import pygame, os, sys, Laser
+from pygame.locals import *
+from random import randint
+
+class Battlecruiser(pygame.sprite.Sprite):
+    """ battlecruiser sprite class"""
+
+    def __init__(self, image_file, init_x, init_y, ship_speed, laser_speed,
+                 cooldown):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = self.load_image(image_file)
+        self.image_w, self.image_h = self.image.get_size()
+        self.screen = screen
+
+        self.rect = self.image.get_rect()
+
+        # set initial position, speed
+        self.x = init_x
+        self.y = init_y
+        self.rect.x = init_x
+        self.rect.y = init_y
+        self.dx = 0
+        self.dy = 0
+
+        # set ship attributes
+        self.lasers = []
+        self.speed = ship_speed
+        self.laser_speed = laser_speed
+        self.cooldown = cooldown
+
+    def load_image(self, image_file):
+        """ loads image and throws exception if not found """
+        try:
+            image = pygame.image.load(image_file)
+        except pygame.error:
+            print "Unable to load image " + fullname
+            sys.exit()
+        return image.convert_alpha()
+
+
+    def update(self):
+        """ updates cruiser position """
+        self.x += self.dx
+        self.y += self.dy
+        self.rect.x += self.dx
+        self.rect.y += self.dy
+
+    def draw(self):
+        """ draws cruiser """
+        draw_pos = self.image.get_rect().move(self.rect.x, self.rect.y)
+        self.screen.blit(self.image, draw_pos)
+
+
+if __name__ == "__main__":
+    # make sure font and sound are enabled
+    if not pygame.font:
+        print "Font not enabled"
+    if not pygame.mixer:
+        print "Font not enabled"
+
+    # constants
+    FPS = 50
+    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+    BACKGROUND_COLOR = (0, 0, 0)
+    CRUISER_IMAGE = 'assets/battlecruiser.gif'
+    LASER_IMAGE = 'assets/laser.gif'
+    SHIP_SPEED = 40
+    LASER_SPEED = 20
+    SHIP_COOLDOWN = 300  # ms between shots
+    
+    # initialize pygame
+    pygame.init()
+    pygame.display.set_caption('Battlecruiser for Lab 3')
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
+    clock = pygame.time.Clock()
+    
+    # initialize battle cruiser
+    ship = Battlecruiser(CRUISER_IMAGE, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 
+                         SHIP_SPEED, LASER_SPEED, SHIP_COOLDOWN)
+    
+    #time of last shot fired for cooldown calculation
+    last_fired = float("-inf")
+    
+    # game loop
+    while True:
+        time_passed = clock.tick(FPS)
+        current_time = pygame.time.get_ticks() # elapsed time of program
+        
+        
+        # event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: # quit event
+                pygame.quit()
+                sys.exit()
+
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:  # exit
+                    pygame.quit()
+                    sys.exit()
+
+                elif event.key == K_LEFT:  # move left
+                    if ship.x - ship.speed >= 0:
+                        ship.dx = -1 * ship.speed
+                elif event.key == K_RIGHT:  # move right
+                    if ship.x + ship.speed + ship.rect.w <= SCREEN_WIDTH:
+                        ship.dx = ship.speed
+                elif event.key == K_UP:  # move up
+                    if ship.y - ship.speed >= 0:
+                        ship.dy = -1 * ship.speed
+                elif event.key == K_DOWN:  # move down
+                    if ship.y + ship.speed + ship.rect.h <= SCREEN_HEIGHT:
+                        ship.dy = ship.speed
+
+                elif event.key == K_SPACE:  # fire laser
+                    if current_time - last_fired > ship.cooldown:
+                        l_x = ship.x + ship.rect.w / 2
+                        ship.lasers.append(Laser.Laser(LASER_IMAGE, screen, l_x,
+                                                       ship.y, 0, 
+                                                       -1*ship.laser_speed))
+                        last_fired = current_time # last shot fired was now
+
+        # redraw background
+        screen.fill(BACKGROUND_COLOR)
+
+        # update, redraw cruiser
+        ship.update()
+        ship.draw()
+        ship.dx = 0  # disables movement while holding keys
+        ship.dy = 0
+        
+        # update, redraw lasers
+        for active_laser in ship.lasers:
+            active_laser.update()
+            active_laser.draw()
+            if active_laser.rect.y <= 0:  # kill laser when it goes offscreen
+                active_laser.kill()
+                ship.lasers.remove(active_laser)
+
+        # draw sprites
+        pygame.display.flip()  
