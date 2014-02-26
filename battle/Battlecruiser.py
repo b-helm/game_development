@@ -38,13 +38,25 @@ class Battlecruiser(pygame.sprite.Sprite):
         return image.convert_alpha()
 
 
-    def update(self):
+    def update(self, width, height):
         """ updates cruiser position """
-        self.x += self.dx
-        self.y += self.dy
-        self.rect.x += self.dx
-        self.rect.y += self.dy
+        if self.dx < 0 and self.x + self.dx > 0:
+            self.x += self.dx
+            self.rect.x += self.dx
+         
+        if self.dx > 0 and self.x + self.image_w + self.dx < width:
+            self.x += self.dx
+            self.rect.x += self.dx
+         
+        if self.dy < 0 and self.y + self.dy > 0:
+            self.y += self.dy
+            self.rect.y += self.dy
 
+        if self.dy > 0 and self.y + self.image_h + self.dy < height:
+            self.y += self.dy
+            self.rect.y += self.dy
+
+            
     def draw(self):
         """ draws cruiser """
         draw_pos = self.image.get_rect().move(self.rect.x, self.rect.y)
@@ -64,7 +76,7 @@ if __name__ == "__main__":
     BACKGROUND_COLOR = (0, 0, 0)
     CRUISER_IMAGE = 'assets/battlecruiser.gif'
     LASER_IMAGE = 'assets/laser.gif'
-    SHIP_SPEED = 40
+    SHIP_SPEED = 10
     LASER_SPEED = 20
     SHIP_COOLDOWN = 300  # ms between shots
     
@@ -99,17 +111,13 @@ if __name__ == "__main__":
                     sys.exit()
 
                 elif event.key == K_LEFT:  # move left
-                    if ship.x - ship.speed >= 0:
-                        ship.dx = -1 * ship.speed
+                    ship.dx += -1 * ship.speed
                 elif event.key == K_RIGHT:  # move right
-                    if ship.x + ship.speed + ship.rect.w <= SCREEN_WIDTH:
-                        ship.dx = ship.speed
+                    ship.dx += ship.speed
                 elif event.key == K_UP:  # move up
-                    if ship.y - ship.speed >= 0:
-                        ship.dy = -1 * ship.speed
+                    ship.dy += -1 * ship.speed
                 elif event.key == K_DOWN:  # move down
-                    if ship.y + ship.speed + ship.rect.h <= SCREEN_HEIGHT:
-                        ship.dy = ship.speed
+                    ship.dy += ship.speed
 
                 elif event.key == K_SPACE:  # fire laser
                     if current_time - last_fired > ship.cooldown:
@@ -119,15 +127,23 @@ if __name__ == "__main__":
                                                        -1*ship.laser_speed))
                         last_fired = current_time # last shot fired was now
 
+            elif event.type == KEYUP:
+                if event.key == K_LEFT:
+                    ship.dx -= -1 * ship.speed
+                if event.key == K_RIGHT:
+                    ship.dx -= ship.speed
+                if event.key == K_UP: 
+                    ship.dy -= -1 * ship.speed
+                if event.key == K_DOWN:
+                    ship.dy -= ship.speed
+
         # redraw background
         screen.fill(BACKGROUND_COLOR)
 
         # update, redraw cruiser
-        ship.update()
+        ship.update(SCREEN_WIDTH, SCREEN_HEIGHT)
         ship.draw()
-        ship.dx = 0  # disables movement while holding keys
-        ship.dy = 0
-        
+            
         # update, redraw lasers
         for active_laser in ship.lasers:
             active_laser.update()
