@@ -39,6 +39,7 @@ class Enemy(pygame.sprite.Sprite):
         return image.convert_alpha()
 
     def explode(self, explode_image):
+        """ sets image to explosion, deactivates sprite """
         self.image = self.load_image(explode_image)
         self.dx = 0
         self.dy = 0

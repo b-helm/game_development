@@ -3,7 +3,6 @@ from pygame.locals import *
 from random import randint, choice
 
 class Background(pygame.sprite.Sprite):
-
     def __init__(self, screen, image_file, scroll_speed):
         pygame.sprite.Sprite.__init__(self)
         self.screen = screen
@@ -31,13 +30,14 @@ class Background(pygame.sprite.Sprite):
         return image.convert_alpha()
 
     def update(self):
+        """ updates background position """
         if self.y >= 0 or self.y <= -1 * (self.image_h - self.screen_h):
             self.dy *= -1
-        
             
         self.y += self.dy
 
     def draw(self):
+        """ draws background """
         if self.scrolling == True:
             draw_pos = self.image.get_rect().move(self.x, self.y)
             self.screen.blit(self.image, draw_pos)
@@ -67,7 +67,6 @@ def main(args):
     ENEMY_MAX_SPEED = 5
     SCROLL_SPEED = 4
     
-
     # initialize pygame
     pygame.init()
     pygame.display.set_caption('The Battle for Ram Aras')
@@ -100,14 +99,13 @@ def main(args):
     status = 1
 
 
-
-
     # GAME LOOP
     while True:
         time_passed = clock.tick(FPS)
         current_time = pygame.time.get_ticks() # elapsed time of program
         
         if status == 1: # YOU ARE ALIVE
+           
             # event handling
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # quit event
@@ -224,8 +222,6 @@ def main(args):
             screen.blit(score_text, (360, 330))
             pygame.display.flip()
         
-   
-
 
 if __name__ == "__main__":
     main(sys.argv)

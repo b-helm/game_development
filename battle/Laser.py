@@ -26,6 +26,7 @@ class Laser(pygame.sprite.Sprite):
         self.dy = init_dy
     
     def load_sound(self, sound_file):
+        """ load sound, throw exception if it fails """
         try:
             sound = pygame.mixer.Sound(sound_file)
         except pygame.error:
