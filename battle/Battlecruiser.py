@@ -82,6 +82,7 @@ if __name__ == "__main__":
     SHIP_SPEED = 10
     LASER_SPEED = 20
     SHIP_COOLDOWN = 300  # ms between shots
+    LASER_SOUND = 'assets/laser.wav'
     
     # initialize pygame
     pygame.init()
@@ -126,7 +127,8 @@ if __name__ == "__main__":
                         l_x = ship.x + ship.rect.w / 2
                         ship.lasers.append(Laser.Laser(LASER_IMAGE, screen, l_x,
                                                        ship.y, 0, 
-                                                       -1*ship.laser_speed))
+                                                       -1*ship.laser_speed, 
+                                                       LASER_SOUND))
                         last_fired = current_time # last shot fired was now
 
             elif event.type == KEYUP:

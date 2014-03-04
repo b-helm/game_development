@@ -90,7 +90,7 @@ def main(args):
         dx = choice([-1, 1]) * randint(2, ENEMY_MAX_SPEED)
         dy = choice([-1, 1]) * randint(2, ENEMY_MAX_SPEED)
         x = randint(1, 600)
-        y = randint(1, 300)
+        y = randint(1, 200)
         enemies.append(Enemy.Enemy(screen, ENEMY_IMAGE, x, y, dx, dy, None)) 
 
     # initialize score
@@ -164,7 +164,7 @@ def main(args):
             for active_laser in ship.lasers:
                 active_laser.update()
                 active_laser.draw()
-                if active_laser.rect.y <= 0:  # kill laser if it goes offscreen
+                if active_laser.rect.y <= -50: # kill laser if it goes offscreen
                     active_laser.kill()
                     ship.lasers.remove(active_laser)
 
@@ -187,7 +187,7 @@ def main(args):
                         dx = choice([-1, 1]) * randint(2, ENEMY_MAX_SPEED)
                         dy = choice([-1, 1]) * randint(2, ENEMY_MAX_SPEED)
                         x = randint(1, 600)
-                        y = randint(1, 300)
+                        y = randint(1, 200)
                         enemies.append(Enemy.Enemy(screen, ENEMY_IMAGE, 
                                                    x, y, dx, dy, None))
                         break

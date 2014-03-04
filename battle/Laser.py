@@ -68,7 +68,8 @@ if __name__ == "__main__":
     SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
     BACKGROUND_COLOR = (0,0,0)
     LASER_IMAGE = 'assets/laser.gif'
-    
+    LASER_SOUND = 'assets/laser.wav'
+
     # initialize pygame
     pygame.init()
     pygame.display.set_caption('Lasers for Lab 3')
@@ -84,7 +85,7 @@ if __name__ == "__main__":
 
         # add a new laser every iteration of the loop
         laser_list.append(Laser(LASER_IMAGE, screen, randint(1, SCREEN_WIDTH),
-                                550, 0, randint(1, 10) * -1))
+                                600, 0, randint(1, 10) * -1, LASER_SOUND))
      
         # handle quit events
         for event in pygame.event.get():
@@ -102,7 +103,7 @@ if __name__ == "__main__":
         for laser in laser_list:
             laser.update()
             laser.draw()
-            if laser.rect.y <= 0:  # remove sprite when it goes offscreen
+            if laser.rect.y <= -50:  # remove sprite when it goes offscreen
                 laser.kill()
                 laser_list.remove(laser)
 
