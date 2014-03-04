@@ -5,13 +5,16 @@ from random import randint
 class Battlecruiser(pygame.sprite.Sprite):
     """ battlecruiser sprite class"""
 
-    def __init__(self, image_file, init_x, init_y, ship_speed, laser_speed,
-                 cooldown):
+    def __init__(self,screen, image_file, init_x, init_y, ship_speed, 
+                 laser_speed, cooldown):
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image(image_file)
         self.image_w, self.image_h = self.image.get_size()
         self.screen = screen
-
+        
+        self.active = True
+        
+        # initializes collision box
         self.rect = self.image.get_rect()
 
         # set initial position, speed
@@ -33,26 +36,26 @@ class Battlecruiser(pygame.sprite.Sprite):
         try:
             image = pygame.image.load(image_file)
         except pygame.error:
-            print "Unable to load image " + fullname
+            print "Unable to load image " 
             sys.exit()
         return image.convert_alpha()
 
 
-    def update(self, width, height):
+    def update(self):
         """ updates cruiser position """
-        if self.dx < 0 and self.x + self.dx > 0:
+        if self.dx < 0 and self.x > 0:
             self.x += self.dx
             self.rect.x += self.dx
          
-        if self.dx > 0 and self.x + self.image_w + self.dx < width:
+        if self.dx > 0 and self.x + self.image_w < self.screen.get_size()[0]:
             self.x += self.dx
             self.rect.x += self.dx
          
-        if self.dy < 0 and self.y + self.dy > 0:
+        if self.dy < 0 and self.y > 0:
             self.y += self.dy
             self.rect.y += self.dy
 
-        if self.dy > 0 and self.y + self.image_h + self.dy < height:
+        if self.dy > 0 and self.y + self.image_h < self.screen.get_size()[1]:
             self.y += self.dy
             self.rect.y += self.dy
 
@@ -87,7 +90,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
     
     # initialize battle cruiser
-    ship = Battlecruiser(CRUISER_IMAGE, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 
+    ship = Battlecruiser(screen, CRUISER_IMAGE, 350, 400, 
                          SHIP_SPEED, LASER_SPEED, SHIP_COOLDOWN)
     
     #time of last shot fired for cooldown calculation
@@ -97,8 +100,7 @@ if __name__ == "__main__":
     while True:
         time_passed = clock.tick(FPS)
         current_time = pygame.time.get_ticks() # elapsed time of program
-        
-        
+      
         # event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # quit event
@@ -141,7 +143,7 @@ if __name__ == "__main__":
         screen.fill(BACKGROUND_COLOR)
 
         # update, redraw cruiser
-        ship.update(SCREEN_WIDTH, SCREEN_HEIGHT)
+        ship.update()
         ship.draw()
             
         # update, redraw lasers

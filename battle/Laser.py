@@ -5,11 +5,15 @@ from random import randint
 class Laser(pygame.sprite.Sprite):
     """ Laser sprite """
 
-    def __init__(self, image_file, screen, init_x, init_y, init_dx, init_dy):
+    def __init__(self, image_file, screen, init_x, init_y, init_dx, init_dy,
+                 sound_file):
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image(image_file)
         self.image_w, self.image_h = self.image.get_size()
         self.screen = screen
+        
+        self.sound = self.load_sound(sound_file)
+        self.sound.play()
         
         self.rect = self.image.get_rect()
         
@@ -20,7 +24,14 @@ class Laser(pygame.sprite.Sprite):
         self.y = init_y
         self.dx = init_dx
         self.dy = init_dy
-        
+    
+    def load_sound(self, sound_file):
+        try:
+            sound = pygame.mixer.Sound(sound_file)
+        except pygame.error:
+            print "Failed to load laser sound"
+            sys.exit()
+        return sound
 
     def load_image(self, image_file):
         """ loads image and throws exception if not found """
