@@ -25,7 +25,7 @@ class Background(pygame.sprite.Sprite):
         try:
             image = pygame.image.load(image_file)
         except pygame.error:
-            print "Unable to load image " + fullname
+            print "Unable to load image " + image_file
             sys.exit()
         return image.convert_alpha()
 
