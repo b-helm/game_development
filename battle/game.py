@@ -61,7 +61,7 @@ def main(args):
     LASER_SOUND = 'assets/laser.wav'
     DEATH_SOUND = 'assets/death_explode.wav'
     SCORE_LOCATION = (10, 10)
-    SHIP_SPEED = 10
+    SHIP_SPEED = 1000
     LASER_SPEED = 20
     SHIP_COOLDOWN = 200  # ms between shots
     ENEMY_MAX_SPEED = 5
